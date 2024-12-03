@@ -1,0 +1,44 @@
+name: Docker Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Vérifier le code source
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Connecter à Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Puller l'image Docker
+      - name: Pull Docker Image
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/testdocker:${{ github.ref_name }}
+
+      # Extraire les fichiers de l'image
+      - name: Extract Files from Docker Image
+        run: |
+          docker create --name temp-container ${{ secrets.DOCKER_USERNAME }}/testdocker:${{ github.ref_name }}
+          docker cp temp-container:/usr/share/nginx/html ./html
+          docker rm temp-container
+
+      # Déployer sur GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./html
+          cname: roadrunnor.github.io
