@@ -17,7 +17,7 @@ run-staging:
 	docker run -d -p 8082:80 $(USERNAME)/testdocker:staging
 
 run-prod:
-	docker run -d -p 8080:80 $(USERNAME)/testdocker:master
+	docker run -d -p 8083:80 $(USERNAME)/testdocker:master
 
 clean:
 	docker stop $(docker ps -q)
