@@ -40,6 +40,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ./html
+          publish_dir: ./
           destination_dir: ${{ github.ref_name == 'refs/heads/main' && './' || github.ref_name }}
           cname: ${{ github.ref_name == 'refs/heads/main' && 'roadrunnor.github.io' || '' }}
